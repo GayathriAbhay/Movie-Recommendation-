@@ -9,7 +9,7 @@ const[searchTerm, setSearchTerm] = React.useState('');
       <div className="pattern"/>
       <div className="wrapper">
         <header>
-          <img src="hero.svg" alt="Hero Banner" />
+          <img src="mainhero.png" alt="Hero Banner" />
           <h1>Find <span className="text-gradient">Movies </span>You'll Enjoy Without The Hassle</h1>
         </header>
         <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>

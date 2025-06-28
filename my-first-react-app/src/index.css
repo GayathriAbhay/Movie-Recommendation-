@@ -49,8 +49,13 @@
 }
 
 @layer components {
+
   .pattern {
-    @apply bg-hero-pattern w-full h-screen bg-center bg-no-repeat bg-contain absolute z-0;
+    background-image: url('/bg1.jpg');
+    background-repeat: repeat-y;         /* Repeat vertically */
+    background-size: cover;              /* Stretch it across width */
+    background-position: top center;     /* Align to top center */
+    @apply w-full min-h-screen absolute z-0;
   }
 
 

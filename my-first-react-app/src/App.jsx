@@ -46,7 +46,7 @@ const App = () => {
       console.error('Error fetching movies:', error);
       setErrorMessage('Failed to fetch movies. Please try again later.');
     } finally {
-      setIsLoading(true);
+      setIsLoading(false);
     }
   };
 

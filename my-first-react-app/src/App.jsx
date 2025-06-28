@@ -3,7 +3,6 @@ import Search from './components/Search';
 import Spinner from './components/Spinner';
 import MovieCard from './components/MovieCard';
 
-
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -21,14 +20,15 @@ const App = () => {
   const [movieList, setMovieList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchMovies = async (query='') => {
+  const fetchMovies = async (query = '') => {
     setIsLoading(true);
     setErrorMessage('');
 
     try {
-      const endpoint = query 
-      ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}` 
-      :`${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+      const endpoint = query
+      ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}&include_adult=false`
+      : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+
 
       const response = await fetch(endpoint, API_OPTIONS);
 
@@ -54,9 +54,16 @@ const App = () => {
     }
   };
 
+  // Initial fetch for popular movies
   useEffect(() => {
+    fetchMovies();
+  }, []);
+
+  // Form submit handler
+  const handleSearch = (e) => {
+    e.preventDefault();
     fetchMovies(searchTerm);
-  }, [searchTerm]);
+  };
 
   return (
     <main>
@@ -72,20 +79,24 @@ const App = () => {
             Find <span className="text-gradient">Movies </span>
             You'll Enjoy Without The Hassle
           </h1>
-          <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+          <Search
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            onSearch={handleSearch}
+          />
         </header>
 
         <section className="all-movies">
           <h2 className="mt-[40px]">All Movies</h2>
 
           {isLoading ? (
-            <Spinner/>
+            <Spinner />
           ) : errorMessage ? (
             <p className="text-red-500">{errorMessage}</p>
           ) : (
             <ul>
               {movieList.map((movie) => (
-                <MovieCard key={movie.id} movie={movie}/>
+                <MovieCard key={movie.id} movie={movie} />
               ))}
             </ul>
           )}

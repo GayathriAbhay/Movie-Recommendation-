@@ -1,10 +1,9 @@
 import React from 'react';
-import { Spinner as FlowbiteSpinner } from 'flowbite-react';
 
 const Spinner = () => {
   return (
     <div className="flex justify-center items-center py-6">
-      <FlowbiteSpinner color="pink" aria-label="Loading..." />
+      <div className="w-8 h-8 border-4 border-pink-400 border-t-transparent rounded-full animate-spin" />
     </div>
   );
 };

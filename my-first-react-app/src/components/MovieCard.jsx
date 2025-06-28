@@ -9,14 +9,24 @@ const MovieCard = ({
         src={poster_path ? `https://image.tmdb.org/t/p/w500/${poster_path}` : '/No-Poster.png'}
         alt={title}
       />
-      <h3>{title}</h3>
-      <div className="content">
-        <div className="rating">
-          <img src="/star.svg" alt="Rating" />
-          <p>{vote_average}</p>
+      <div className='mt-4'>
+        <h3>{title}</h3>
+
+        <div className='content'>
+            <div className='rating'>
+                <img src="star.png" alt="Star Icon"/>
+                <p>
+                    {vote_average ? vote_average.toFixed(1) : 'N/A'}
+                </p>
+            </div>
+
+            <span>•</span>
+            <p className='lang'>{original_language}</p>
+            <span>•</span>
+            <p className='year'>
+                {release_date ? new Date(release_date).getFullYear() : 'N/A'}
+            </p>
         </div>
-        <span className="lang">{original_language}</span>
-        <span className="year">{release_date?.split('-')[0]}</span>
       </div>
     </div>
   );

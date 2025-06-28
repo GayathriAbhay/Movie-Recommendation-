@@ -51,7 +51,7 @@
 @layer components {
 
   .pattern {
-    background-image: url('/bg1.jpg');
+    background-image: url('/bg2.jpg');
     background-repeat: repeat-y;         /* Repeat vertically */
     background-size: cover;              /* Stretch it across width */
     background-position: top center;     /* Align to top center */

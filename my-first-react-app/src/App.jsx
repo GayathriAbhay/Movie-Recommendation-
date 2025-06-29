@@ -4,6 +4,7 @@ import Spinner from './components/Spinner';
 import MovieCard from './components/MovieCard';
 import { getTrendingMovies, updateSearchCount } from './appwrite';
 
+
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -86,7 +87,12 @@ const App = () => {
 
   return (
     <main>
+      {/* Background layers */}
       <div className="pattern" />
+      <div className="gradient-overlay" />
+
+      <div className="pattern parallax-bg" /> //new
+
       <div className="wrapper">
         <header>
           <img

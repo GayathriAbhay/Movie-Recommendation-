@@ -28,9 +28,8 @@ const App = () => {
 
     try {
       const endpoint = query
-      ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}&include_adult=false`
-      : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
-
+        ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}&include_adult=false`
+        : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
 
       const response = await fetch(endpoint, API_OPTIONS);
 
@@ -48,10 +47,9 @@ const App = () => {
 
       setMovieList(data.results);
 
-      if(query && data.results.length > 0) {
-        // Update search count in Appwrite
-        await updateSearchCount(query, data.results[0]);
-      } 
+      if (query && data.results.length > 0) {
+        await updateSearchCount(query, data.results[0]); // Track only top result
+      }
 
     } catch (error) {
       console.error('Error fetching movies:', error);
@@ -62,27 +60,25 @@ const App = () => {
   };
 
   const loadTrendingMovies = async () => {
-    try{
-      const movies=await getTrendingMovies();
-
+    try {
+      const movies = await getTrendingMovies();
+      console.log("Trending movies from Appwrite:", movies);
       setTrendingMovies(movies);
-
-   }catch(error) {
+    } catch (error) {
       console.error('Error fetching trending movies:', error);
     }
-  }
+  };
 
-  // Initial fetch for popular movies
+  // Initial load of default movie list
   useEffect(() => {
     fetchMovies();
   }, []);
 
+  // Load trending on first render
   useEffect(() => {
-    // Load trending movies on initial render
     loadTrendingMovies();
   }, []);
 
-  // Form submit handler
   const handleSearch = (e) => {
     e.preventDefault();
     fetchMovies(searchTerm);
@@ -110,24 +106,25 @@ const App = () => {
         </header>
 
         {trendingMovies.length > 0 && (
-          <section className='trending'>
-              <h2>Treding Movies</h2>
-
-              <ul>
-                {trendingMovies.map((movie,index) => (
-                  <li key={movie.$id}>
-                    <p>{index+1}</p>
-                    <img src={movie.poster_url} alt={movie.title}/>
-                  </li>
-                ))}
-
-              </ul>
+          <section className="trending">
+            <h2>Trending Movies</h2>
+            <ul>
+              {trendingMovies.map((movie, index) => (
+                <li key={movie.$id}>
+                  <p>{index + 1}</p>
+                  <img
+                    src={movie.poster_url || '/No-Poster.png'}
+                    alt={movie.searchTerm}
+                    className="w-[127px] h-[163px] object-cover rounded-lg"
+                  />
+                </li>
+              ))}
+            </ul>
           </section>
         )}
 
         <section className="all-movies">
-          <h2>All Movies</h2>
-
+          <h2 className="mt-[40px]">All Movies</h2>
           {isLoading ? (
             <Spinner />
           ) : errorMessage ? (

@@ -9,22 +9,24 @@ const client = new Client()
   .setEndpoint(ENDPOINT)
   .setProject(PROJECT_ID);
 
-const database = new Databases(client); 
+const database = new Databases(client);
 
 export const updateSearchCount = async (searchTerm, movie) => {
   try {
-    // 1. Check if search term exists
+    console.log("🔥 updateSearchCount called with:", searchTerm, movie);
+
     const result = await database.listDocuments(
       DATABASE_ID,
       COLLECTION_ID,
-      [
-        Query.equal('searchTerm', searchTerm)
-      ]
+      [Query.equal('searchTerm', searchTerm)]
     );
 
-    // 2. If it exists, update count
+    console.log("📄 Existing documents:", result.documents);
+
     if (result.documents.length > 0) {
       const doc = result.documents[0];
+
+      console.log("✏️ Updating existing document:", doc.$id);
 
       await database.updateDocument(
         DATABASE_ID,
@@ -35,7 +37,8 @@ export const updateSearchCount = async (searchTerm, movie) => {
         }
       );
     } else {
-      // 3. Otherwise, create a new document
+      console.log("🆕 Creating new document...");
+
       await database.createDocument(
         DATABASE_ID,
         COLLECTION_ID,
@@ -49,24 +52,22 @@ export const updateSearchCount = async (searchTerm, movie) => {
       );
     }
   } catch (error) {
-    console.error('Error updating search count:', error);
+    console.error('❌ Error updating search count:', error);
   }
 };
 
-
 export const getTrendingMovies = async () => {
-    try{
-        const result=await database.listDocuments(
-            DATABASE_ID,
-            COLLECTION_ID,
-            [
-                Query.orderDesc('count'),
-                Query.limit(5)
-            ]
-        );
-        return result.documents;
-        
-    }catch (error) {
-        console.error('Error fetching trending movies:', error);
-    }
-}
+  try {
+    const result = await database.listDocuments(
+      DATABASE_ID,
+      COLLECTION_ID,
+      [
+        Query.orderDesc("count"),
+        Query.limit(5)
+      ]
+    );
+    return result.documents;
+  } catch (error) {
+    console.error('❌ Error fetching trending movies:', error);
+  }
+};

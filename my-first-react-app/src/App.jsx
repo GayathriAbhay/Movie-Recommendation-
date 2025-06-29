@@ -3,6 +3,7 @@ import Search from './components/Search';
 import Spinner from './components/Spinner';
 import MovieCard from './components/MovieCard';
 import { getTrendingMovies, updateSearchCount } from './appwrite';
+import Chatbot from './components/Chatbot';
 
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
@@ -127,6 +128,7 @@ const App = () => {
               ))}
             </ul>
           </section>
+
         )}
 
         <section className="all-movies">
@@ -143,6 +145,7 @@ const App = () => {
             </ul>
           )}
         </section>
+        <Chatbot />
       </div>
     </main>
   );

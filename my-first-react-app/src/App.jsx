@@ -3,8 +3,7 @@ import Search from './components/Search';
 import Spinner from './components/Spinner';
 import MovieCard from './components/MovieCard';
 import { getTrendingMovies, updateSearchCount } from './appwrite';
-import Chatbot from './components/Chatbot';
-
+import FloatingChat from './components/FloatingChat'; // new floating chatbot
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -14,7 +13,7 @@ const API_OPTIONS = {
   headers: {
     accept: 'application/json',
     Authorization: `Bearer ${API_KEY}`,
-  }
+  },
 };
 
 const App = () => {
@@ -52,7 +51,6 @@ const App = () => {
       if (query && data.results.length > 0) {
         await updateSearchCount(query, data.results[0]); // Track only top result
       }
-
     } catch (error) {
       console.error('Error fetching movies:', error);
       setErrorMessage('Failed to fetch movies. Please try again later.');
@@ -64,19 +62,17 @@ const App = () => {
   const loadTrendingMovies = async () => {
     try {
       const movies = await getTrendingMovies();
-      console.log("Trending movies from Appwrite:", movies);
+      console.log('Trending movies from Appwrite:', movies);
       setTrendingMovies(movies);
     } catch (error) {
       console.error('Error fetching trending movies:', error);
     }
   };
 
-  // Initial load of default movie list
   useEffect(() => {
     fetchMovies();
   }, []);
 
-  // Load trending on first render
   useEffect(() => {
     loadTrendingMovies();
   }, []);
@@ -91,10 +87,9 @@ const App = () => {
       {/* Background layers */}
       <div className="pattern" />
       <div className="gradient-overlay" />
+      <div className="pattern parallax-bg" />
 
-      <div className="pattern parallax-bg" /> //new
-
-      <div className="wrapper">
+      <div className="wrapper pb-24"> {/* add padding to avoid overlap with chatbot */}
         <header>
           <img
             src="mainhero.png"
@@ -128,7 +123,6 @@ const App = () => {
               ))}
             </ul>
           </section>
-
         )}
 
         <section className="all-movies">
@@ -145,8 +139,10 @@ const App = () => {
             </ul>
           )}
         </section>
-        <Chatbot />
       </div>
+
+      {/*  Floating Chatbot */}
+      <FloatingChat />
     </main>
   );
 };

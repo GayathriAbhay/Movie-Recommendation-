@@ -5,48 +5,59 @@ const Chatbot = () => {
   const [messages, setMessages] = useState([]);
   const bottomRef = useRef(null);
 
-  const sendQuery = async () => {
-    if (!query.trim()) return;
-
-    const userMessage = { type: 'user', text: query };
-    setMessages((prev) => [...prev, userMessage]);
-    setQuery('');
-
-    try {
-      const res = await fetch('https://chatbot-project-ahby.onrender.com/query', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          question: query,
-          chat_history: [],
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error('API Error');
-      }
-
-      const data = await res.json();
-      const botMessage = { type: 'bot', text: data.answer || 'No response received.' };
-      setMessages((prev) => [...prev, botMessage]);
-    } catch (error) {
-      console.error('Error:', error);
-      setMessages((prev) => [
-        ...prev,
-        { type: 'bot', text: ' Unable to get a response. Please try again later.' },
-      ]);
-    }
-  };
-
-  // Auto-scroll to the bottom on message update
+  // Scroll to bottom on new message
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Send user query to the RAG chatbot API
+  const sendQuery = async () => {
+    if (!query.trim()) return;
+
+    const userMessage = { type: 'user', text: query };
+    //setMessages((prev) => [...prev, userMessage]);
+    setQuery('');
+
+    // Optionally add a "thinking..." message while awaiting response
+    setMessages((prev) => [
+      ...prev,
+      userMessage,
+      { type: 'bot', text: 'Thinking...' },
+    ]);
+
+    try {
+      const res = await fetch('https://rag-groq-3.onrender.com/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: query,
+          chat_history: messages
+            .filter((m) => m.type === 'user' || m.type === 'bot')
+            .map((m) => [m.type, m.text]),
+        }),
+      });
+
+      if (!res.ok) throw new Error('API error');
+
+      const data = await res.json();
+
+      // Replace "Thinking..." with actual bot response
+      setMessages((prev) => [
+        ...prev.slice(0, -1),
+        { type: 'bot', text: data.answer || 'No response received.' },
+      ]);
+    } catch (error) {
+      console.error('Error:', error);
+      setMessages((prev) => [
+        ...prev.slice(0, -1),
+        { type: 'bot', text: '⚠️ Unable to get a response. Try again later.' },
+      ]);
+    }
+  };
+
   return (
     <div className="bg-dark-100 p-6 rounded-xl max-w-md mx-auto mt-10 shadow-lg border border-light-100/10">
       <h2 className="text-white text-2xl font-bold mb-4 flex items-center gap-2">
-        <span className="text-3xl"></span>
         Ask our <span className="text-gradient">MovieBot</span>
       </h2>
 

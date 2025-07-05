@@ -143,6 +143,8 @@ const App = () => {
 
       {/*  Floating Chatbot */}
       <FloatingChat />
+      console.log("Rebuild test");
+
     </main>
   );
 };

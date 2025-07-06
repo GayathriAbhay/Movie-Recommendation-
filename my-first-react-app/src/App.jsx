@@ -143,7 +143,8 @@ const App = () => {
 
       {/*  Floating Chatbot */}
       <FloatingChat />
-      
+      console.log("Triggering clean redeploy");
+
     </main>
   );
 };
